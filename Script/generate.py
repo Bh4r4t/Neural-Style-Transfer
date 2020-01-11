@@ -1,9 +1,10 @@
-import style_and_content as sac, utils
+import sys
 import torch
 from torchvision import models
 from torch import optim
 import matplotlib.pyplot as plt
 from matplotlib.image import imsave
+import style_and_content as sac, utils
 
 def styleFeat(styleFeatures):
     style_grams = {}
@@ -39,14 +40,25 @@ def train(style_grams, content_features, target, model, epochs, optimizer, alpha
         total_loss.backward()
         optimizer.step()
 
-        print('Loss_is: {:.03f}'.format(total_loss))
+        #print('Epoch: {}/{} | TotalLoss: {:.03f}'.format(i+1, epochs, total_loss))
+
+        print('Epoch: {}/{} | TotalLoss: {:.04f}'.format(i+1, epochs, total_loss))
+        if (i+1)%200 == 0:
+            plt.imshow(utils.DeNormalize(target))
+            plt.show()
     
-    imsave('final.png', utils.DeNormalize(target))
+    imsave('final.jpg', utils.DeNormalize(target))
+    print('Image Generated!')
 
 def main(img1, img2, epochs, lr=0.01, alpha = 1, beta = 1e6):
-    style, content = utils.LoadImage(img1, img2)
-    target = content.clone().requires_grad_(True)
-    model = sac.Net()
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
+    style, content = utils.LoadImage(img1, img2, device)
+    target = content.clone().requires_grad_(True).to(device)
+    model = sac.Net().to(device)
+
     style_features = sac.getFeatures(model, style)
     content_features = sac.getFeatures(model, content)
  
@@ -57,4 +69,7 @@ def main(img1, img2, epochs, lr=0.01, alpha = 1, beta = 1e6):
     train(style_gram, content_features, target, model, epochs, optimizer, alpha, beta)
 
 if __name__ == "__main__":
-    main('C:/Users/Ladre/Desktop/images.jpg', 'C:/Users/Ladre/Desktop/images1.jpg', 1000)
+    style = sys.argv[1]
+    content = sys.argv[2]
+    epochs = sys.argv[3]
+    main(style, content, int(epochs))
