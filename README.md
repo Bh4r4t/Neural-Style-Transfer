@@ -1,5 +1,5 @@
 # Neural-Style-Transfer
-A PyTorch implementation of the paper [Image Style Transfer Using Convolutional Neural Network]('https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf) by LA Gatys et al. - CVPR 2016.
+A PyTorch implementation of the paper [Image Style Transfer Using Convolutional Neural Network by LA Gatys et al. - CVPR 2016.](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
 
 <p align='center'>
 <img src='./images/image_flow.png'>
